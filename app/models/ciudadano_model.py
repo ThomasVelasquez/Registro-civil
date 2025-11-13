@@ -17,7 +17,7 @@ TODOS_LOS_CAMPOS = [
 def setup_db():
     query = '''
         CREATE TABLE IF NOT EXISTS ciudadano (
-            id_ciudadano INTEGER NOT NULL PRIMARY KEY, 
+            id_ciudadano INTEGER PRIMARY KEY AUTOINCREMENT, 
             cedula INTEGER NOT NULL UNIQUE, 
             primer_nombre TEXT NOT NULL, 
             segundo_nombre TEXT, 
