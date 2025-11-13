@@ -11,7 +11,6 @@ def create_app():
     app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
     app.config['DATABASE_PATH'] = os.getenv('DATABASE_PATH')
 
-    # Permitir tus orígenes de dev (http + 127.0.0.1)
     CORS(app, origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173"
@@ -20,8 +19,8 @@ def create_app():
     from app.models import ciudadano_model
     ciudadano_model.setup_db()
 
-    from app.controllers.ciudadano_controllers import ciudadano_bp
-    # Registrar blueprint — si tus rutas dentro del blueprint usan '' o '/', controla las barras
+    from app.controllers.ciudadano_controllers import ciudadano_bp 
+    
     app.register_blueprint(ciudadano_bp, url_prefix='/api/v1/ciudadanos')
 
     return app
