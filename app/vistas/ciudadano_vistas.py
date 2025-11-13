@@ -29,9 +29,9 @@ def setup_routes(ciudadano_bp):
             return jsonify({
                 "error": "Faltan campos obligatorios.",
                 "campos_faltantes": missing_fields
-            }), 400
+            }), 400 
         
-        # Mantenemos la lógica de obtención de datos
+        # Mantenemos la lógica de obtención de datos 
         cedula = data.get('cedula') or data.get('id_number')
         primer_nombre = data.get('primer_nombre') or data.get('first_name')
         segundo_nombre = data.get('segundo_nombre') or data.get('second_name')

@@ -25,11 +25,11 @@ def create_app():
     from app.models import empleado_model
 
     empleado_model.setup_db()
-
-    from app.controllers.ciudadano_controllers import ciudadano_bp
+    
+    from app.controllers.ciudadano_controllers import ciudadano_bp 
     from app.controllers.empleado_controllers import empleado_bp
-
-    app.register_blueprint(ciudadano_bp, url_prefix="/api/v1/ciudadanos")
-    app.register_blueprint(empleado_bp, url_prefix="/api/v1/empleados")
+    
+    app.register_blueprint(ciudadano_bp, url_prefix='/api/v1/ciudadanos')
+    app.register_blueprint(empleado_bp, url_prefix='/api/v1/empleados')
 
     return app
