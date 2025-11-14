@@ -2,3 +2,5 @@
 config/local.py
 settings.local.json
 *.key
+__pycache__/
+*.pyc

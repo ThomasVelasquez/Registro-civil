@@ -97,12 +97,13 @@ def obtener_nacimiento_por_acta(acta_nacimiento):
     query = f"SELECT {campos} FROM nacimiento WHERE acta_nacimiento = ?"
     return fetch_one(query, (acta_nacimiento,))
 
-def actualizar_nacimiento_db(acta_nacimiento, numero_folio, numero_tomo, fecha_registro_nac,
-                        lugar_registro_nac, lugar_nacimiento, hora_nacimiento,
-                        nro_certificado_medico, fecha_expedicion_cert,
-                        autoridad_expide_cert, numero_mpps_autoridad, nombre_centro_salud,
-                        documentos_presentandos, id_ciudadano, id_empleado, id_ciudadanoM,
-                        id_ciudadanoP, id_ciudadanoNT1, id_ciudadanoNT2):
+def actualizar_nacimiento_db(
+    acta_nacimiento, numero_folio, numero_tomo, fecha_registro_nac,
+    lugar_registro_nac, lugar_nacimiento, hora_nacimiento,
+    nro_certificado_medico, fecha_expedicion_cert,
+    autoridad_expide_cert, numero_mpps_autoridad, nombre_centro_salud,
+    documentos_presentandos, id_ciudadano, id_empleado, id_ciudadanoM,
+    id_ciudadanoP, id_ciudadanoNT1, id_ciudadanoNT2):
     
     query = """
         UPDATE nacimiento SET
@@ -126,16 +127,18 @@ def actualizar_nacimiento_db(acta_nacimiento, numero_folio, numero_tomo, fecha_r
             id_ciudadanoNT2 = ?
         WHERE acta_nacimiento = ?
     """
-    
-    params = (acta_nacimiento,
+  
+    params = (
         numero_folio, numero_tomo, fecha_registro_nac,
         lugar_registro_nac, lugar_nacimiento, hora_nacimiento,
         nro_certificado_medico, fecha_expedicion_cert,
         autoridad_expide_cert, numero_mpps_autoridad,
         nombre_centro_salud, documentos_presentandos,
         id_ciudadano, id_empleado, id_ciudadanoM, id_ciudadanoP,
-        id_ciudadanoNT1, id_ciudadanoNT2
+        id_ciudadanoNT1, id_ciudadanoNT2,
+        acta_nacimiento 
     )
+    
     print(params, "parametros de nacimiento")
     execute_query(query, params)
     

@@ -82,12 +82,12 @@ def actualizar_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apelli
             estado_civil = ?, 
             domicilio = ?, 
             fecha_nacimiento = ?,
-            profesion = ?,
+            profesion = ?
         WHERE cedula = ? 
     """
     params = (
-        cedula,primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, 
-        genero, nacionalidad, estado_civil, domicilio, fecha_nacimiento, profesion
+        primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, 
+        genero, nacionalidad, estado_civil, domicilio, fecha_nacimiento, profesion, cedula
     )
     execute_query(query, params)
 

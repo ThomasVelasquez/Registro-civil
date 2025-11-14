@@ -106,5 +106,5 @@ def setup_routes(ciudadano_bp):
                 "error": "Error de integridad al actualizar. Revise que los campos obligatorios estén presentes y no sean NULL.",
                 "detalle": f"Detalle DB: {e}"
             }), 400
-        except Exception:
-            return jsonify({"error": "Error al actualizar."}), 500
+        except Exception as e:
+            return jsonify({"error": "Error al actualizar.", "detalle_tecnico": str(e)}), 500
