@@ -29,9 +29,9 @@ def setup_routes(ciudadano_bp):
             return jsonify({
                 "error": "Faltan campos obligatorios.",
                 "campos_faltantes": missing_fields
-            }), 400
+            }), 400 
         
-        # Mantenemos la lógica de obtención de datos
+        # Mantenemos la lógica de obtención de datos 
         cedula = data.get('cedula') or data.get('id_number')
         primer_nombre = data.get('primer_nombre') or data.get('first_name')
         segundo_nombre = data.get('segundo_nombre') or data.get('second_name')
@@ -106,5 +106,5 @@ def setup_routes(ciudadano_bp):
                 "error": "Error de integridad al actualizar. Revise que los campos obligatorios estén presentes y no sean NULL.",
                 "detalle": f"Detalle DB: {e}"
             }), 400
-        except Exception:
-            return jsonify({"error": "Error al actualizar."}), 500
+        except Exception as e:
+            return jsonify({"error": "Error al actualizar.", "detalle_tecnico": str(e)}), 500
