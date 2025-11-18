@@ -38,16 +38,23 @@ def create_app():
 
     matrimonio_model.setup_db()
 
+    from app.models import divorcio_model
+    
+    divorcio_model.setup_db()
+    
+    
     from app.controllers.ciudadano_controllers import ciudadano_bp
     from app.controllers.empleado_controllers import empleado_bp
     from app.controllers.nacimiento_controllers import nacimiento_bp
     from app.controllers.defuncion_controllers import defuncion_bp
     from app.controllers.matrimonio_controllers import matrimonio_bp
+    from app.controllers.divorcio_controllers import divorcio_bp
 
     app.register_blueprint(ciudadano_bp, url_prefix="/api/v1/ciudadanos")
     app.register_blueprint(empleado_bp, url_prefix="/api/v1/empleados")
     app.register_blueprint(nacimiento_bp, url_prefix="/api/v1/nacimientos")
     app.register_blueprint(defuncion_bp, url_prefix="/api/v1/defunciones")
     app.register_blueprint(matrimonio_bp, url_prefix="/api/v1/matrimonios")
+    app.register_blueprint(divorcio_bp, url_prefix="/api/v1/divorcios")
 
     return app

@@ -65,6 +65,26 @@ def setup_routes(matrimonio_bp):
         id_ciudadanoPC2 = data.get("id_ciudadanoPC2")
         id_ciudadanoMT1 = data.get("id_ciudadanoMT1")
         id_ciudadanoMT2 = data.get("id_ciudadanoMT2")
+        
+
+        print("datas", acta_matrimonio,
+                numero_folio,
+                numero_tomo,
+                fecha_registro_mat,
+                lugar_registro_mat,
+                id_empleado,
+                fecha_matrimonio,
+                lugar_matrimonio,
+                hora_matrimonio,
+                id_ciudadanoC1,
+                id_ciudadanoC2,
+                id_ciudadanoMC1,
+                id_ciudadanoPC1,
+                id_ciudadanoMC2,
+                id_ciudadanoPC2,
+                id_ciudadanoMT1,
+                id_ciudadanoMT2,)
+
 
         try:
             matrimonio_model.crear_matrimonio_db(
