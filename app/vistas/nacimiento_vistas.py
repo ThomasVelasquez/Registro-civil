@@ -124,7 +124,7 @@ def setup_routes(nacimiento_bp):
         campos_requeridos = ["numero_folio", "numero_tomo", "fecha_registro_nac", 
                          "lugar_registro_nac", "lugar_nacimiento", "hora_nacimiento", 
                          "nro_certificado_medico", "id_ciudadano", "id_empleado", 
-                         "id_ciudadanoM", "id_ciudadanoP", "id_ciudadanoNT1", "id_ciudadanoNT2"] # Y más, según tu CREATE TABLE
+                         "id_ciudadanoM", "id_ciudadanoP", "id_ciudadanoNT1", "id_ciudadanoNT2"]
 
         for campo in campos_requeridos:
             if data.get(campo) is None:
