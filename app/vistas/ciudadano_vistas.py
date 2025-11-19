@@ -83,16 +83,17 @@ def setup_routes(ciudadano_bp):
         if not data:
             return jsonify({"error": "No se recibieron datos JSON para actualizar"}), 400
 
-        primer_nombre = data.get('primer_nombre')
-        segundo_nombre = data.get('segundo_nombre')
-        primer_apellido = data.get('primer_apellido')
-        segundo_apellido = data.get('segundo_apellido')
-        genero = data.get('genero')
-        nacionalidad = data.get('nacionalidad')
-        estado_civil = data.get('estado_civil')
-        domicilio = data.get('domicilio')
-        fecha_nacimiento = data.get('fecha_nacimiento')
-        profesion = data.get('profesion')
+        cedula = data.get('cedula') or data.get('id_number')
+        primer_nombre = data.get('primer_nombre') or data.get('first_name')
+        segundo_nombre = data.get('segundo_nombre') or data.get('second_name')
+        primer_apellido = data.get('primer_apellido') or data.get('first_lastName') or data.get('first_lastname')
+        segundo_apellido = data.get('segundo_apellido') or data.get('second_lastName')
+        genero = data.get('genero') or data.get('gender')
+        nacionalidad = data.get('nacionalidad') or data.get('nationality')
+        estado_civil = data.get('estado_civil') or data.get('civilStatus')
+        domicilio = data.get('domicilio') or data.get('address')
+        fecha_nacimiento = data.get('fecha_nacimiento') or data.get('birthDate')
+        profesion = data.get('profesion') or data.get('profession')
         
         try:
             ciudadano_model.actualizar_ciudadano_db(
