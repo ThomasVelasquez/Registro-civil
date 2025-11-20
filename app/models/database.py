@@ -40,15 +40,15 @@ def get_db_connection():
     _ensure_parent_dir_exists(DATABASE_NAME)
 
     try:
+        # check_same_thread=False es importante para Flask en modo debug o si usas hilos
         conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
-        conn.row_factory = sqlite3.Row
+        conn.row_factory = sqlite3.Row # Permite acceder a los resultados por nombre de columna
         return conn
     except sqlite3.OperationalError as e:
         raise sqlite3.OperationalError(f"Error con la DB en '{DATABASE_NAME}': {e}") from e
 
 
 def execute_query(query, params=None):
-    
     conn = get_db_connection()
     cur = conn.cursor()
     try:
@@ -57,13 +57,47 @@ def execute_query(query, params=None):
         else:
             cur.execute(query)
         conn.commit()
+        
+        if query.strip().lower().startswith("insert"):
+            last_id = cur.lastrowid
+            return last_id
+            
+    finally:
+        cur.close()
+        conn.close()
+    
+    return None
+
+# 🚨 NUEVA FUNCIÓN PARA CARGA MASIVA 🚨
+def execute_many_query(query, params_list):
+    """
+    Ejecuta una consulta de manera masiva (INSERT, UPDATE) usando executemany().
+    Ideal para la carga de CSV.
+    
+    :param query: La consulta SQL a ejecutar.
+    :param params_list: Una lista de tuplas o diccionarios con los parámetros para la consulta.
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        # Usa executemany para procesar todos los elementos de la lista en un solo lote
+        cur.executemany(query, params_list)
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        # Capturamos errores de llave única (como cédulas duplicadas)
+        conn.rollback() 
+        raise e
+    except Exception as e:
+        # Capturamos otros errores y hacemos rollback
+        conn.rollback()
+        raise e
     finally:
         cur.close()
         conn.close()
 
 
 def fetch_all(query, params=None):
-    
+    """Ejecuta una consulta SELECT y retorna todos los resultados como lista de diccionarios."""
     conn = get_db_connection()
     cur = conn.cursor()
     try:
@@ -80,6 +114,7 @@ def fetch_all(query, params=None):
 
 
 def fetch_one(query, params=None):
+    """Ejecuta una consulta SELECT y retorna un solo resultado como diccionario o None."""
     conn = get_db_connection()
     cur = conn.cursor()
     try:
