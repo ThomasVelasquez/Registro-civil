@@ -3,24 +3,21 @@ from app.models import divorcio_model
 from sqlite3 import IntegrityError
 
 REQUIRED_FIELDS = [
+    "sentencia_divorcio",
     "numero_expediente",
     "asunto_principal",
     "numero_folio",
     "numero_tomo",
     "fecha_registro_div",
     "lugar_registro_div",
-    "fecha_sentencia_div",
-    "lugar_sentencia_div",
-    "hora_sentencia_div",
-    "causa_divorcio",
+    "id_empleado",
+    "fecha_sentencia",
+    "lugar_sentencia",
     "poder_judicial",
     "nombre_abogado",
-    "numero_ipsa",
+    "numero_ipsa_abogado",
     "acta_matrimonio",
-    "motivo",
-    "id_ciudadano_1",
-    "id_ciudadano_2",
-    "id_empleado",
+    "motivo"
 ]
 
 
@@ -30,7 +27,7 @@ def setup_routes(divorcio_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON"}), 400
+            return jsonify({"error": "No se recibieron datos JSON."}), 400
 
         missing_fields = [
             field
@@ -56,38 +53,22 @@ def setup_routes(divorcio_bp):
         fecha_registro_div = data.get("fecha_registro_div")
         lugar_registro_div = data.get("lugar_registro_div")
         id_empleado = data.get("id_empleado")
-        fecha_sentencia_div = data.get("fecha_sentencia_div")
-        lugar_sentencia_div = data.get("lugar_sentencia_div")
-        hora_sentencia_div = data.get("hora_sentencia_div")
-        causa_divorcio = data.get("causa_divorcio")
+        fecha_sentencia = data.get("fecha_sentencia")
+        lugar_sentencia = data.get("lugar_sentencia")
         poder_judicial = data.get("poder_judicial")
         nombre_abogado = data.get("nombre_abogado")
-        numero_ipsa = data.get("numero_ipsa")
+        numero_ipsa_abogado = data.get("numero_ipsa_abogado")
         acta_matrimonio = data.get("acta_matrimonio")
         motivo = data.get("motivo")
-        id_ciudadano_1 = data.get("id_ciudadano_1")
-        id_ciudadano_2 = data.get("id_ciudadano_2")
 
         try:
             divorcio_model.crear_divorcio_db(
-                numero_expediente,
-                asunto_principal,
-                numero_folio,
-                numero_tomo,
-                fecha_registro_div,
-                lugar_registro_div,
-                fecha_sentencia_div,
-                lugar_sentencia_div,
-                hora_sentencia_div,
-                causa_divorcio,
-                poder_judicial,
-                nombre_abogado,
-                numero_ipsa,
-                acta_matrimonio,
-                motivo,
-                id_ciudadano_1,
-                id_ciudadano_2,
-                id_empleado
+                numero_expediente, asunto_principal, numero_folio, numero_tomo,
+                fecha_registro_div, lugar_registro_div,
+                id_empleado,
+                fecha_sentencia, lugar_sentencia,
+                poder_judicial, nombre_abogado, numero_ipsa_abogado,
+                acta_matrimonio, motivo
             )
             
             return jsonify({"message": "Sentencia de divorcio creada."}), 201

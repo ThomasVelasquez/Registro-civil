@@ -5,6 +5,7 @@ from sqlite3 import IntegrityError
 REQUIRED_FIELDS = [
     "id_empleado",
     "id_ciudadano",
+    "numero_empleado",
     "oficina_registro",
     "numero_resolucion",
     "fecha_resolucion",
@@ -20,7 +21,7 @@ def setup_routes(empleado_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON"}), 400
+            return jsonify({"error": "No se recibieron datos JSON."}), 400
 
         missing_fields = [
             field
@@ -41,6 +42,7 @@ def setup_routes(empleado_bp):
 
         id_empleado = data.get("id_empleado")
         id_ciudadano = data.get("id_ciudadano")
+        numero_empleado = data.get("numero_empleado")
         oficina_registro = data.get("oficina_registro")
         numero_resolucion = data.get("numero_resolucion")
         fecha_resolucion = data.get("fecha_resolucion")
@@ -51,19 +53,20 @@ def setup_routes(empleado_bp):
             empleado_model.crear_empleado_db(
                 id_empleado,
                 id_ciudadano,
+                numero_empleado,
                 oficina_registro,
                 numero_resolucion,
                 fecha_resolucion,
                 numero_gaceta,
                 fecha_gaceta,
             )
-            return jsonify({"message": "Empleado Creado"}), 201
+            return jsonify({"message": "Empleado Creado."}), 201
 
         except IntegrityError as e:
             return (
                 jsonify(
                     {
-                        "error": "Error: La cédula ya existe",
+                        "error": "Error: La cédula ya existe.",
                         "detalle": f"Detalle DB: {e}",
                     }
                 ),

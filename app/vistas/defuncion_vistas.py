@@ -3,27 +3,28 @@ from app.models import defuncion_model
 from sqlite3 import IntegrityError
 
 REQUIRED_FIELDS = [
-    'acta_defuncion', 
-    'numero_folio', 
-    'numero_tomo', 
-    'fecha_registro_def', 
-    'lugar_registro_def', 
-    'fecha_fallecimiento', 
-    'lugar_fallecimiento', 
-    'hora_fallecimiento', 
-    'causa_fallecimiento', 
-    'forma_fallecimiento',
-    'nro_certificado_defuncion',
-    'fecha_expedicion_defuncion',
-    'autoridad_expide_defuncion',
-    'numero_mpps_autoridad_def',
-    'denominacion_dependencia_salud', 
-    'relacion_con_fallecido',
+    'acta_defuncion',
+    'numero_folio',
+    'numero_tomo',
+    'fecha_registro_def',
+    'lugar_registro_def',
+    'id_empleado',
     'id_ciudadano',
+    'fecha_fallecimiento',
+    'lugar_fallecimiento',
+    'hora_fallecimiento',
+    'causa',
+    'forma',
+    'nro_certificado_def',
+    'fecha_expedicion_def',
+    'autoridad_expide_def',
+    'numero_mpps_autoridad_def',
+    'denominacion_dependencia_salud',
     'id_ciudadano_declarante',
+    'relacion_con_fallecido',
+    'id_ciudadanoC',
     'id_ciudadano_FM',
-    'id_ciudadano_FP',
-    'id_empleado'
+    'id_ciudadano_FP'
 ]
 
 def setup_routes(defuncion_bp):
@@ -33,7 +34,7 @@ def setup_routes(defuncion_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON"}), 400 
+            return jsonify({"error": "No se recibieron datos JSON."}), 400 
 
         missing_fields = [
             field
@@ -56,53 +57,55 @@ def setup_routes(defuncion_bp):
         numero_tomo = data.get("numero_tomo")
         fecha_registro_def = data.get("fecha_registro_def")
         lugar_registro_def = data.get("lugar_registro_def")
+        id_empleado = data.get("id_empleado")
+        id_ciudadano = data.get("id_ciudadano")
         fecha_fallecimiento = data.get("fecha_fallecimiento")
         lugar_fallecimiento = data.get("lugar_fallecimiento")
         hora_fallecimiento = data.get("hora_fallecimiento")
-        causa_fallecimiento = data.get("causa_fallecimiento")
-        forma_fallecimiento = data.get("forma_fallecimiento")
-        nro_certificado_defuncion = data.get("nro_certificado_defuncion")
-        fecha_expedicion_defuncion = data.get("fecha_expedicion_defuncion")
-        autoridad_expide_defuncion = data.get("autoridad_expide_defuncion")
+        causa = data.get("causa")
+        forma = data.get("forma")
+        nro_certificado_def = data.get("nro_certificado_def")
+        fecha_expedicion_def = data.get("fecha_expedicion_def")
+        autoridad_expide_def = data.get("autoridad_expide_def")
         numero_mpps_autoridad_def = data.get("numero_mpps_autoridad_def")
         denominacion_dependencia_salud = data.get("denominacion_dependencia_salud")
-        relacion_con_fallecido = data.get("relacion_con_fallecido")
-        id_ciudadano = data.get("id_ciudadano")
         id_ciudadano_declarante = data.get("id_ciudadano_declarante")
+        relacion_con_fallecido = data.get("relacion_con_fallecido")
+        id_ciudadanoC = data.get("id_ciudadanoC")
         id_ciudadano_FM = data.get("id_ciudadano_FM")
         id_ciudadano_FP = data.get("id_ciudadano_FP")
-        id_empleado = data.get("id_empleado")
 
         try:
             defuncion_model.crear_defuncion_db( 
-                numero_folio, 
-                numero_tomo, 
-                fecha_registro_def, 
-                lugar_registro_def, 
-                fecha_fallecimiento, 
-                lugar_fallecimiento, 
-                hora_fallecimiento, 
-                causa_fallecimiento, 
-                forma_fallecimiento,
-                nro_certificado_defuncion,
-                fecha_expedicion_defuncion,
-                autoridad_expide_defuncion,
-                numero_mpps_autoridad_def,
-                denominacion_dependencia_salud, 
-                relacion_con_fallecido,
+                numero_folio,
+                numero_tomo,
+                fecha_registro_def,
+                lugar_registro_def,
+                id_empleado,
                 id_ciudadano,
+                fecha_fallecimiento,
+                lugar_fallecimiento,
+                hora_fallecimiento,
+                causa,
+                forma,
+                nro_certificado_def,
+                fecha_expedicion_def,
+                autoridad_expide_def,
+                numero_mpps_autoridad_def,
+                denominacion_dependencia_salud,
                 id_ciudadano_declarante,
+                relacion_con_fallecido,
+                id_ciudadanoC,
                 id_ciudadano_FM,
-                id_ciudadano_FP,
-                id_empleado
+                id_ciudadano_FP
             )
-            return jsonify({"message": "Defuncion Creada"}), 201
+            return jsonify({"message": "Defunción Creada."}), 201
 
         except IntegrityError as e:
             return (
                 jsonify(
                     {
-                        "error": "Error: La defuncion ya existe",
+                        "error": "Error: La acta de defunción ya existe.",
                         "detalle": f"Detalle DB: {e}",
                     }
                 ),

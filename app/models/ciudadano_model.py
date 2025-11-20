@@ -81,17 +81,18 @@ def obtener_todos_ciudadanos():
     return fetch_all(query)
 
 
-def obtener_ciudadano_por_cedula(cedula):
+def obtener_ciudadano_por_id(id_ciudadano):
     campos = "id_ciudadano, " + ", ".join(TODOS_LOS_CAMPOS)
-    query = f"SELECT {campos} FROM ciudadano WHERE cedula = ?"
-    return fetch_one(query, (cedula,))
+    query = f"SELECT {campos} FROM ciudadano WHERE id_ciudadano = ?"
+    return fetch_one(query, (id_ciudadano,))
 
 
-def actualizar_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido, 
+def actualizar_ciudadano_db(id_ciudadano, cedula, primer_nombre, segundo_nombre, primer_apellido, 
                             segundo_apellido, genero, nacionalidad, estado_civil, 
                             domicilio, fecha_nacimiento, profesion):
     query = """
         UPDATE ciudadano SET
+            cedula = ?,
             primer_nombre = ?, 
             segundo_nombre = ?, 
             primer_apellido = ?, 
@@ -102,17 +103,16 @@ def actualizar_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apelli
             domicilio = ?, 
             fecha_nacimiento = ?,
             profesion = ?
-        WHERE cedula = ? 
+        WHERE id_ciudadano = ? OR cedula = ? 
     """
     params = (
+        id_ciudadano, cedula,
         primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, 
-        genero, nacionalidad, estado_civil, domicilio, fecha_nacimiento, profesion, cedula
+        genero, nacionalidad, estado_civil, domicilio, fecha_nacimiento, profesion
     )
     execute_query(query, params)
 
 
-""" 
-def eliminar_ciudadano_db(cedula):
-    query = "DELETE FROM ciudadano WHERE cedula = ?"
-    execute_query(query, (cedula,)) 
-"""
+""" def eliminar_ciudadano_db(id_ciudadano):
+    query = "DELETE FROM ciudadano WHERE id_ciudadano = ?"
+    execute_query(query, (id_ciudadano,)) """

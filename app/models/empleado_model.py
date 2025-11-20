@@ -3,6 +3,7 @@ from app.models.database import execute_query, fetch_all, fetch_one
 TODOS_LOS_CAMPOS = [
     "id_empleado",
     "id_ciudadano",
+    "numero_empleado",
     "oficina_registro",
     "numero_resolucion",
     "fecha_resolucion",
@@ -15,7 +16,8 @@ def setup_db():
     query = """
         CREATE TABLE IF NOT EXISTS empleado (
             id_empleado INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_ciudadano INTEGER NOT NULL, 
+            id_ciudadano INTEGER NOT NULL,
+            numero_empleado INTEGER NOT NULL UNIQUE,
             oficina_registro TEXT NOT NULL, 
             numero_resolucion TEXT NOT NULL, 
             fecha_resolucion TEXT NOT NULL,
@@ -30,24 +32,25 @@ def setup_db():
 def crear_empleado_db(
     id_empleado,
     id_ciudadano,
+    numero_empleado,
     oficina_registro,
     numero_resolucion,
     fecha_resolucion,
     numero_gaceta,
-    fecha_gaceta,
-):
+    fecha_gaceta):
 
     query = """
         INSERT INTO empleado (
-            id_empleado,id_ciudadano,
-            oficina_registro,numero_resolucion,fecha_resolucion,
-            numero_gaceta,fecha_gaceta
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            id_empleado, id_ciudadano, numero_empleado,
+            oficina_registro, numero_resolucion, fecha_resolucion,
+            numero_gaceta, fecha_gaceta
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     params = (
         id_empleado,
         id_ciudadano,
+        numero_empleado,
         oficina_registro,
         numero_resolucion,
         fecha_resolucion,
