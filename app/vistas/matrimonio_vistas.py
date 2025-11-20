@@ -30,7 +30,7 @@ def setup_routes(matrimonio_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON"}), 400
+            return jsonify({"error": "No se recibieron datos JSON."}), 400
 
         missing_fields = [
             field
@@ -67,44 +67,26 @@ def setup_routes(matrimonio_bp):
         id_ciudadanoMT2 = data.get("id_ciudadanoMT2")
         
 
-        print("datas", acta_matrimonio,
-                numero_folio,
-                numero_tomo,
-                fecha_registro_mat,
-                lugar_registro_mat,
-                id_empleado,
-                fecha_matrimonio,
-                lugar_matrimonio,
-                hora_matrimonio,
-                id_ciudadanoC1,
-                id_ciudadanoC2,
-                id_ciudadanoMC1,
-                id_ciudadanoPC1,
-                id_ciudadanoMC2,
-                id_ciudadanoPC2,
-                id_ciudadanoMT1,
-                id_ciudadanoMT2,)
+        print("datas", acta_matrimonio, numero_folio, numero_tomo,
+              fecha_registro_mat, lugar_registro_mat,
+              id_empleado,
+              fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
+              id_ciudadanoC1, id_ciudadanoC2,
+              id_ciudadanoMC1, id_ciudadanoPC1,
+              id_ciudadanoMC2, id_ciudadanoPC2,
+              id_ciudadanoMT1, id_ciudadanoMT2)
 
 
         try:
             matrimonio_model.crear_matrimonio_db(
-                acta_matrimonio,
-                numero_folio,
-                numero_tomo,
-                fecha_registro_mat,
-                lugar_registro_mat,
+                acta_matrimonio, numero_folio, numero_tomo,
+                fecha_registro_mat, lugar_registro_mat,
                 id_empleado,
-                fecha_matrimonio,
-                lugar_matrimonio,
-                hora_matrimonio,
-                id_ciudadanoC1,
-                id_ciudadanoC2,
-                id_ciudadanoMC1,
-                id_ciudadanoPC1,
-                id_ciudadanoMC2,
-                id_ciudadanoPC2,
-                id_ciudadanoMT1,
-                id_ciudadanoMT2,
+                fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
+                id_ciudadanoC1, id_ciudadanoC2,
+                id_ciudadanoMC1, id_ciudadanoPC1,
+                id_ciudadanoMC2, id_ciudadanoPC2,
+                id_ciudadanoMT1, id_ciudadanoMT2
             )
             return jsonify({"message": "Acta de matrimonio creada."}), 201
 
@@ -193,23 +175,14 @@ def setup_routes(matrimonio_bp):
 
         try:
             matrimonio_model.actualizar_matrimonio_db(
-                acta_matrimonio,
-                numero_folio,
-                numero_tomo,
-                fecha_registro_mat,
-                lugar_registro_mat,
+                acta_matrimonio, numero_folio, numero_tomo,
+                fecha_registro_mat, lugar_registro_mat,
                 id_empleado,
-                fecha_matrimonio,
-                lugar_matrimonio,
-                hora_matrimonio,
-                id_ciudadanoC1,
-                id_ciudadanoC2,
-                id_ciudadanoMC1,
-                id_ciudadanoPC1,
-                id_ciudadanoMC2,
-                id_ciudadanoPC2,
-                id_ciudadanoMT1,
-                id_ciudadanoMT2
+                fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
+                id_ciudadanoC1, id_ciudadanoC2,
+                id_ciudadanoMC1, id_ciudadanoPC1,
+                id_ciudadanoMC2, id_ciudadanoPC2,
+                id_ciudadanoMT1, id_ciudadanoMT2
             )
 
             return jsonify({"Message": f"Acta {acta_matrimonio} actualizada."})

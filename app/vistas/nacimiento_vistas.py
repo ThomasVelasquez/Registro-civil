@@ -8,6 +8,8 @@ REQUIRED_FIELDS = [
     'numero_tomo', 
     'fecha_registro_nac', 
     'lugar_registro_nac',
+    'id_empleado',
+    'id_ciudadano',
     'lugar_nacimiento', 
     'hora_nacimiento',
     'nro_certificado_medico',
@@ -15,13 +17,11 @@ REQUIRED_FIELDS = [
     'autoridad_expide_cert',
     'numero_mpps_autoridad',
     'nombre_centro_salud',
-    'documentos_presentandos',
-    'id_ciudadano',
-    'id_empleado',
     'id_ciudadanoM',
     'id_ciudadanoP',
-    'id_ciudadanoNT1',
-    'id_ciudadanoNT2'
+    'id_ciudadanoT1',
+    'id_ciudadanoT2',
+    'documentos_presentandos'
 ]
 
 def setup_routes(nacimiento_bp):
@@ -31,7 +31,7 @@ def setup_routes(nacimiento_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON"}), 400 
+            return jsonify({"error": "No se recibieron datos JSON."}), 400 
 
         missing_fields = [
             field
@@ -54,6 +54,8 @@ def setup_routes(nacimiento_bp):
         numero_tomo = data.get("numero_tomo")
         fecha_registro_nac = data.get("fecha_registro_nac")
         lugar_registro_nac = data.get("lugar_registro_nac")
+        id_empleado = data.get("id_empleado")
+        id_ciudadano = data.get("id_ciudadano")
         lugar_nacimiento = data.get("lugar_nacimiento")
         hora_nacimiento = data.get("hora_nacimiento")
         nro_certificado_medico = data.get("nro_certificado_medico")
@@ -61,13 +63,11 @@ def setup_routes(nacimiento_bp):
         autoridad_expide_cert = data.get("autoridad_expide_cert")
         numero_mpps_autoridad = data.get("numero_mpps_autoridad")
         nombre_centro_salud = data.get("nombre_centro_salud")
-        documentos_presentandos = data.get("documentos_presentandos")
-        id_ciudadano = data.get("id_ciudadano")
-        id_empleado = data.get("id_empleado")
         id_ciudadanoM = data.get("id_ciudadanoM")
         id_ciudadanoP = data.get("id_ciudadanoP")
-        id_ciudadanoNT1 = data.get("id_ciudadanoNT1")
-        id_ciudadanoNT2 = data.get("id_ciudadanoNT2")
+        id_ciudadanoT1 = data.get("id_ciudadanoT1")
+        id_ciudadanoT2 = data.get("id_ciudadanoT2")
+        documentos_presentandos = data.get("documentos_presentandos")
 
         try:
             nacimiento_model.crear_nacimiento_db( 
@@ -75,6 +75,8 @@ def setup_routes(nacimiento_bp):
                 numero_tomo,
                 fecha_registro_nac,
                 lugar_registro_nac,
+                id_empleado,
+                id_ciudadano,
                 lugar_nacimiento,
                 hora_nacimiento,
                 nro_certificado_medico,
@@ -82,13 +84,11 @@ def setup_routes(nacimiento_bp):
                 autoridad_expide_cert,
                 numero_mpps_autoridad,
                 nombre_centro_salud,
-                documentos_presentandos,
-                id_ciudadano,
-                id_empleado,
                 id_ciudadanoM,
                 id_ciudadanoP,
-                id_ciudadanoNT1,
-                id_ciudadanoNT2
+                id_ciudadanoT1,
+                id_ciudadanoT2,
+                documentos_presentandos
             )
             return jsonify({"message": "Acta de nacimiento creada."}), 201
 
@@ -121,10 +121,11 @@ def setup_routes(nacimiento_bp):
     def actualizar_acta(acta_nacimiento):
         data = request.get_json()
         
-        campos_requeridos = ["numero_folio", "numero_tomo", "fecha_registro_nac", 
-                         "lugar_registro_nac", "lugar_nacimiento", "hora_nacimiento", 
-                         "nro_certificado_medico", "id_ciudadano", "id_empleado", 
-                         "id_ciudadanoM", "id_ciudadanoP", "id_ciudadanoNT1", "id_ciudadanoNT2"]
+        campos_requeridos = ["numero_folio", "numero_tomo", "fecha_registro_nac", "lugar_registro_nac",
+                             "id_empleado", "id_ciudadano",
+                             "lugar_nacimiento", "hora_nacimiento", "nro_certificado_medico", 
+                             "id_ciudadanoM", "id_ciudadanoP", "id_ciudadanoT1", "id_ciudadanoT2",
+                             "documentos_presentandos"]
 
         for campo in campos_requeridos:
             if data.get(campo) is None:
@@ -139,6 +140,8 @@ def setup_routes(nacimiento_bp):
         numero_tomo = data.get("numero_tomo")
         fecha_registro_nac = data.get("fecha_registro_nac")
         lugar_registro_nac = data.get("lugar_registro_nac")
+        id_empleado = data.get("id_empleado")
+        id_ciudadano = data.get("id_ciudadano")
         lugar_nacimiento = data.get("lugar_nacimiento")
         hora_nacimiento = data.get("hora_nacimiento")
         nro_certificado_medico = data.get("nro_certificado_medico")
@@ -146,21 +149,20 @@ def setup_routes(nacimiento_bp):
         autoridad_expide_cert = data.get("autoridad_expide_cert")
         numero_mpps_autoridad = data.get("numero_mpps_autoridad")
         nombre_centro_salud = data.get("nombre_centro_salud")
-        documentos_presentandos = data.get("documentos_presentandos")
-        id_ciudadano = data.get("id_ciudadano")
-        id_empleado = data.get("id_empleado")
         id_ciudadanoM = data.get("id_ciudadanoM")
         id_ciudadanoP = data.get("id_ciudadanoP")
-        id_ciudadanoNT1 = data.get("id_ciudadanoNT1")
-        id_ciudadanoNT2 = data.get("id_ciudadanoNT2")
+        id_ciudadanoT1 = data.get("id_ciudadanoT1")
+        id_ciudadanoT2 = data.get("id_ciudadanoT2")
+        documentos_presentandos = data.get("documentos_presentandos")
         
         try:
-            nacimiento_model.actualizar_nacimiento_db(acta_nacimiento, numero_folio,
-            numero_tomo, fecha_registro_nac, lugar_registro_nac, lugar_nacimiento,
-            hora_nacimiento, nro_certificado_medico, fecha_expedicion_cert,
+            nacimiento_model.actualizar_nacimiento_db(acta_nacimiento,
+            numero_folio, numero_tomo, fecha_registro_nac, lugar_registro_nac,
+            id_empleado, id_ciudadano, lugar_nacimiento, hora_nacimiento,
+            nro_certificado_medico, fecha_expedicion_cert,
             autoridad_expide_cert, numero_mpps_autoridad, nombre_centro_salud,
-            documentos_presentandos, id_ciudadano, id_empleado, id_ciudadanoM,
-            id_ciudadanoP, id_ciudadanoNT1, id_ciudadanoNT2)
+            id_ciudadanoM, id_ciudadanoP, id_ciudadanoT1, id_ciudadanoT2,
+            documentos_presentandos)
             
             return jsonify({"Message":f"Acta {acta_nacimiento} actualizada."})
         except IntegrityError as e:
