@@ -2,7 +2,6 @@ from app.models.database import execute_query, fetch_all, fetch_one, execute_man
 
 # Lista de todos los campos que tiene la tabla Ciudadano
 TODOS_LOS_CAMPOS = [
-    # 'cedula', 
     'primer_nombre', 
     'segundo_nombre', 
     'primer_apellido', 
