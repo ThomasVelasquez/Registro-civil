@@ -49,7 +49,6 @@ def get_db_connection():
 
 
 def execute_query(query, params=None):
-    """Ejecuta una única consulta (INSERT, UPDATE, DELETE) y hace commit."""
     conn = get_db_connection()
     cur = conn.cursor()
     try:
@@ -58,10 +57,16 @@ def execute_query(query, params=None):
         else:
             cur.execute(query)
         conn.commit()
+        
+        if query.strip().lower().startswith("insert"):
+            last_id = cur.lastrowid
+            return last_id
+            
     finally:
         cur.close()
         conn.close()
-
+    
+    return None
 
 # 🚨 NUEVA FUNCIÓN PARA CARGA MASIVA 🚨
 def execute_many_query(query, params_list):

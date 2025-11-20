@@ -6,7 +6,7 @@ import io   # Para manejar archivos en memoria
 
 # Campos requeridos para validar una solicitud de creación individual (POST)
 REQUIRED_FIELDS = [
-    'cedula', 
+    # 'cedula', 
     'primer_nombre', 
     'primer_apellido', 
     'genero', 
@@ -14,7 +14,7 @@ REQUIRED_FIELDS = [
     'estado_civil', 
     'domicilio',
     'fecha_nacimiento',
-    'profesion'
+    # 'profesion'
 ]
 
 # El orden exacto de las columnas en el archivo CSV (DEBE COINCIDIR con el modelo)
@@ -65,12 +65,15 @@ def setup_routes(ciudadano_bp):
         
         
         try:
-            ciudadano_model.crear_ciudadano_db(
+            nuevo_id = ciudadano_model.crear_ciudadano_db(
                 cedula, primer_nombre, segundo_nombre, primer_apellido, 
                 segundo_apellido, genero, nacionalidad, estado_civil, 
                 domicilio, fecha_nacimiento, profesion
             )
-            return jsonify({"message": "Ciudadano creado"}), 201
+            return jsonify({
+                "message": "Ciudadano creado",
+                "id_ciudadano": nuevo_id
+            }), 201
             
         except IntegrityError as e:
             return jsonify({

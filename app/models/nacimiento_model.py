@@ -1,7 +1,6 @@
 from app.models.database import execute_query, fetch_all, fetch_one
 
 TODOS_LOS_CAMPOS = [
-    'acta_nacimiento',
     'numero_folio',
     'numero_tomo', 
     'fecha_registro_nac', 
