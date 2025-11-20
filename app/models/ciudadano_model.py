@@ -1,7 +1,8 @@
-from app.models.database import execute_query, fetch_all, fetch_one
+from app.models.database import execute_query, fetch_all, fetch_one, execute_many_query # <-- Se asume 'execute_many_query'
 
+# Lista de todos los campos que tiene la tabla Ciudadano
 TODOS_LOS_CAMPOS = [
-    'cedula', 
+    # 'cedula', 
     'primer_nombre', 
     'segundo_nombre', 
     'primer_apellido', 
@@ -18,7 +19,7 @@ def setup_db():
     query = '''
         CREATE TABLE IF NOT EXISTS ciudadano (
             id_ciudadano INTEGER PRIMARY KEY AUTOINCREMENT, 
-            cedula INTEGER NOT NULL UNIQUE, 
+            cedula INTEGER UNIQUE, 
             primer_nombre TEXT NOT NULL, 
             segundo_nombre TEXT, 
             primer_apellido TEXT NOT NULL, 
@@ -28,15 +29,15 @@ def setup_db():
             estado_civil TEXT NOT NULL, 
             domicilio TEXT NOT NULL, 
             fecha_nacimiento TEXT NOT NULL,
-            profesion TEXT NOT NULL
+            profesion TEXT
         )
     '''
     execute_query(query)
 
 
 def crear_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido, 
-                       segundo_apellido, genero, nacionalidad, estado_civil, 
-                       domicilio, fecha_nacimiento, profesion):
+                      segundo_apellido, genero, nacionalidad, estado_civil, 
+                      domicilio, fecha_nacimiento, profesion):
 
     query = """
         INSERT INTO ciudadano (
@@ -53,7 +54,25 @@ def crear_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido,
     
     print(params,'parametros modelo')
     
-    execute_query(query, params)
+    last_id = execute_query(query, params)
+    return last_id 
+
+
+def insertar_multiples_ciudadanos_db(lista_de_datos):
+    """
+    Inserta múltiples filas de ciudadanos en la base de datos usando execute_many.
+    
+    :param lista_de_datos: Una lista de tuplas con los datos del ciudadano
+                           en el orden definido por TODOS_LOS_CAMPOS.
+    """
+    query = """
+        INSERT INTO ciudadano (
+            cedula, primer_nombre, segundo_nombre, primer_apellido, 
+            segundo_apellido, genero, nacionalidad, estado_civil, 
+            domicilio, fecha_nacimiento, profesion
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    execute_many_query(query, lista_de_datos)
 
 
 def obtener_todos_ciudadanos():
@@ -70,7 +89,7 @@ def obtener_ciudadano_por_cedula(cedula):
 
 def actualizar_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido, 
                             segundo_apellido, genero, nacionalidad, estado_civil, 
-                            domicilio, fecha_nacimiento,profesion):
+                            domicilio, fecha_nacimiento, profesion):
     query = """
         UPDATE ciudadano SET
             primer_nombre = ?, 
@@ -92,6 +111,8 @@ def actualizar_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apelli
     execute_query(query, params)
 
 
-""" def eliminar_ciudadano_db(cedula):
+""" 
+def eliminar_ciudadano_db(cedula):
     query = "DELETE FROM ciudadano WHERE cedula = ?"
-    execute_query(query, (cedula,)) """
+    execute_query(query, (cedula,)) 
+"""
