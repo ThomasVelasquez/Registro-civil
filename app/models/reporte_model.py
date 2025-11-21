@@ -1,7 +1,7 @@
 from app.models.database import fetch_all, fetch_one
 
 def get_volumen_total():
-    """Obtiene el conteo de registros en las 4 tablas principales."""
+    """Obtiene el conteo de registros en las 4 tablas principales + Ciudadanos."""
     query = """
         SELECT 'Nacimientos' AS tipo, COUNT(*) AS total FROM nacimiento
         UNION ALL
@@ -9,7 +9,9 @@ def get_volumen_total():
         UNION ALL
         SELECT 'Divorcios', COUNT(*) FROM divorcio
         UNION ALL
-        SELECT 'Defunciones', COUNT(*) FROM defuncion;
+        SELECT 'Defunciones', COUNT(*) FROM defuncion
+        UNION ALL
+        SELECT 'Ciudadanos', COUNT(*) FROM ciudadano;
     """
     return fetch_all(query)
 
