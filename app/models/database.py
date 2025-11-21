@@ -40,9 +40,8 @@ def get_db_connection():
     _ensure_parent_dir_exists(DATABASE_NAME)
 
     try:
-        # check_same_thread=False es importante para Flask en modo debug o si usas hilos
         conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
-        conn.row_factory = sqlite3.Row # Permite acceder a los resultados por nombre de columna
+        conn.row_factory = sqlite3.Row 
         return conn
     except sqlite3.OperationalError as e:
         raise sqlite3.OperationalError(f"Error con la DB en '{DATABASE_NAME}': {e}") from e
@@ -68,7 +67,6 @@ def execute_query(query, params=None):
     
     return None
 
-# 🚨 NUEVA FUNCIÓN PARA CARGA MASIVA 🚨
 def execute_many_query(query, params_list):
     """
     Ejecuta una consulta de manera masiva (INSERT, UPDATE) usando executemany().
@@ -80,15 +78,12 @@ def execute_many_query(query, params_list):
     conn = get_db_connection()
     cur = conn.cursor()
     try:
-        # Usa executemany para procesar todos los elementos de la lista en un solo lote
         cur.executemany(query, params_list)
         conn.commit()
     except sqlite3.IntegrityError as e:
-        # Capturamos errores de llave única (como cédulas duplicadas)
         conn.rollback() 
         raise e
     except Exception as e:
-        # Capturamos otros errores y hacemos rollback
         conn.rollback()
         raise e
     finally:
