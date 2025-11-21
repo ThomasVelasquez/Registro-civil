@@ -17,7 +17,7 @@ TODOS_LOS_CAMPOS = [
     "id_ciudadanoMC2",
     "id_ciudadanoPC2",
     "id_ciudadanoMT1",
-    "id_ciudadanoMT2"
+    "id_ciudadanoMT2",
 ]
 
 
@@ -56,14 +56,24 @@ def setup_db():
 
 
 def crear_matrimonio_db(
-    acta_matrimonio, numero_folio, numero_tomo,
-    fecha_registro_mat, lugar_registro_mat,
+    acta_matrimonio,
+    numero_folio,
+    numero_tomo,
+    fecha_registro_mat,
+    lugar_registro_mat,
     id_empleado,
-    fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-    id_ciudadanoC1, id_ciudadanoC2,
-    id_ciudadanoMC1, id_ciudadanoPC1,
-    id_ciudadanoMC2, id_ciudadanoPC2,
-    id_ciudadanoMT1, id_ciudadanoMT2):
+    fecha_matrimonio,
+    lugar_matrimonio,
+    hora_matrimonio,
+    id_ciudadanoC1,
+    id_ciudadanoC2,
+    id_ciudadanoMC1,
+    id_ciudadanoPC1,
+    id_ciudadanoMC2,
+    id_ciudadanoPC2,
+    id_ciudadanoMT1,
+    id_ciudadanoMT2,
+):
 
     query = """
         INSERT INTO matrimonio(
@@ -79,23 +89,34 @@ def crear_matrimonio_db(
     """
 
     params = (
-        acta_matrimonio, numero_folio, numero_tomo,
-        fecha_registro_mat, lugar_registro_mat,
+        acta_matrimonio,
+        numero_folio,
+        numero_tomo,
+        fecha_registro_mat,
+        lugar_registro_mat,
         id_empleado,
-        fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-        id_ciudadanoC1, id_ciudadanoC2,
-        id_ciudadanoMC1, id_ciudadanoPC1,
-        id_ciudadanoMC2, id_ciudadanoPC2,
-        id_ciudadanoMT1, id_ciudadanoMT2
+        fecha_matrimonio,
+        lugar_matrimonio,
+        hora_matrimonio,
+        id_ciudadanoC1,
+        id_ciudadanoC2,
+        id_ciudadanoMC1,
+        id_ciudadanoPC1,
+        id_ciudadanoMC2,
+        id_ciudadanoPC2,
+        id_ciudadanoMT1,
+        id_ciudadanoMT2,
     )
 
     print(params, "Parámetros modelo.")
     execute_query(query, params)
 
+
 def obtener_los_matrimonios():
     campos = "acta_matrimonio, " + ", ".join(TODOS_LOS_CAMPOS)
     query = f"SELECT {campos} FROM matrimonio"
     return fetch_all(query)
+
 
 def obtener_matrimonio_por_acta(acta_matrimonio):
     campos = "acta_matrimonio, " + ", ".join(TODOS_LOS_CAMPOS)
@@ -104,14 +125,24 @@ def obtener_matrimonio_por_acta(acta_matrimonio):
 
 
 def actualizar_matrimonio_db(
-    acta_matrimonio, numero_folio, numero_tomo,
-    fecha_registro_mat, lugar_registro_mat,
+    acta_matrimonio,
+    numero_folio,
+    numero_tomo,
+    fecha_registro_mat,
+    lugar_registro_mat,
     id_empleado,
-    fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-    id_ciudadanoC1, id_ciudadanoC2,
-    id_ciudadanoMC1, id_ciudadanoPC1,
-    id_ciudadanoMC2, id_ciudadanoPC2,
-    id_ciudadanoMT1, id_ciudadanoMT2):
+    fecha_matrimonio,
+    lugar_matrimonio,
+    hora_matrimonio,
+    id_ciudadanoC1,
+    id_ciudadanoC2,
+    id_ciudadanoMC1,
+    id_ciudadanoPC1,
+    id_ciudadanoMC2,
+    id_ciudadanoPC2,
+    id_ciudadanoMT1,
+    id_ciudadanoMT2,
+):
 
     query = """
         UPDATE matrimonio SET
@@ -135,16 +166,49 @@ def actualizar_matrimonio_db(
     """
 
     params = (
-        numero_folio, numero_tomo,
-        fecha_registro_mat, lugar_registro_mat,
+        numero_folio,
+        numero_tomo,
+        fecha_registro_mat,
+        lugar_registro_mat,
         id_empleado,
-        fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-        id_ciudadanoC1, id_ciudadanoC2,
-        id_ciudadanoMC1, id_ciudadanoPC1,
-        id_ciudadanoMC2, id_ciudadanoPC2,
-        id_ciudadanoMT1, id_ciudadanoMT2,
-        acta_matrimonio
+        fecha_matrimonio,
+        lugar_matrimonio,
+        hora_matrimonio,
+        id_ciudadanoC1,
+        id_ciudadanoC2,
+        id_ciudadanoMC1,
+        id_ciudadanoPC1,
+        id_ciudadanoMC2,
+        id_ciudadanoPC2,
+        id_ciudadanoMT1,
+        id_ciudadanoMT2,
+        acta_matrimonio,
     )
 
     print(params, "parámetros de matrimonio.")
     execute_query(query, params)
+
+
+def obtener_matrimonios_con_ciudadanos():
+    
+    query = """
+        SELECT
+            m.*, 
+            -- Datos del Cónyuge 1 (C1)
+            c1.cedula AS cedula_c1,
+            c1.primer_nombre AS nombre1_c1,
+            c1.primer_apellido AS apellido1_c1,
+            -- Datos del Cónyuge 2 (C2)
+            c2.cedula AS cedula_c2,
+            c2.primer_nombre AS nombre1_c2,
+            c2.primer_apellido AS apellido1_c2
+        FROM
+            matrimonio m
+        JOIN
+            ciudadano c1 ON m.id_ciudadanoC1 = c1.id_ciudadano
+        JOIN
+            ciudadano c2 ON m.id_ciudadanoC2 = c2.id_ciudadano
+        ORDER BY 
+            m.fecha_registro_mat DESC;
+    """
+    return fetch_all(query)

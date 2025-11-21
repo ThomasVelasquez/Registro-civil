@@ -3,7 +3,6 @@ from app.models import empleado_model
 from sqlite3 import IntegrityError
 
 REQUIRED_FIELDS = [
-    "id_empleado",
     "id_ciudadano",
     "numero_empleado",
     "oficina_registro",
@@ -81,3 +80,17 @@ def setup_routes(empleado_bp):
     def listar_empleados():
         empleados = empleado_model.obtener_todos_empleados()
         return jsonify(empleados), 200
+    
+    @empleado_bp.route("/detalles", methods=["GET"])
+    def listar_empleados_con_ciudadanos():
+        try:
+            empleados = empleado_model.obtener_empleados_con_ciudadanos()
+            
+            if not empleados:
+                return jsonify({"message": "No hay empleados registrados."}), 200
+                
+            return jsonify(empleados), 200
+
+        except Exception as e:
+            print(f"Error al listar empleados con ciudadanos: {e}")
+            return jsonify({"error": "Error interno al obtener el listado de empleados."}), 500

@@ -87,3 +87,17 @@ def setup_routes(divorcio_bp):
         except Exception as e:
             print(f"Error inesperado: {e}")
             return jsonify({"error": "Ocurrió un error interno en el servidor."}), 500
+        
+    @divorcio_bp.route("/detalles", methods=["GET"]) 
+    def listar_divorcios_completos():
+        try:
+            divorcios = divorcio_model.obtener_divorcios_con_matrimonio_y_ciudadanos()
+            
+            if not divorcios:
+                return jsonify({"message": "No hay actas de divorcio registradas."}), 200
+                
+            return jsonify(divorcios), 200
+
+        except Exception as e:
+            print(f"Error al listar divorcios completos: {e}")
+            return jsonify({"error": "Error interno al obtener el listado de divorcios."}), 500

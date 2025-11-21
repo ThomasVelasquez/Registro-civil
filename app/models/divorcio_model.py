@@ -74,3 +74,37 @@ def crear_divorcio_db(
     print("PARAMS:", params)
     
     execute_query(query, params)
+
+
+
+def obtener_divorcios_con_matrimonio_y_ciudadanos():
+    
+    query = """
+        SELECT
+            d.*,                        
+            m.fecha_matrimonio,          
+            m.lugar_matrimonio,          
+            m.acta_matrimonio,         
+            
+            -- Datos del Cónyuge 1 (C1)
+            c1.cedula AS cedula_c1,
+            c1.primer_nombre AS nombre1_c1,
+            c1.primer_apellido AS apellido1_c1,
+            
+            -- Datos del Cónyuge 2 (C2)
+            c2.cedula AS cedula_c2,
+            c2.primer_nombre AS nombre1_c2,
+            c2.primer_apellido AS apellido1_c2
+            
+        FROM
+            divorcio d
+        JOIN
+            matrimonio m ON d.acta_matrimonio = m.acta_matrimonio
+        JOIN
+            ciudadano c1 ON m.id_ciudadanoC1 = c1.id_ciudadano
+        JOIN
+            ciudadano c2 ON m.id_ciudadanoC2 = c2.id_ciudadano
+        ORDER BY
+            d.fecha_registro_div DESC;
+    """
+    return fetch_all(query)

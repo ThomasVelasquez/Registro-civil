@@ -3,7 +3,6 @@ from app.models import matrimonio_model
 from sqlite3 import IntegrityError
 
 REQUIRED_FIELDS = [
-    "acta_matrimonio",
     "numero_folio",
     "numero_tomo",
     "fecha_registro_mat",
@@ -65,28 +64,47 @@ def setup_routes(matrimonio_bp):
         id_ciudadanoPC2 = data.get("id_ciudadanoPC2")
         id_ciudadanoMT1 = data.get("id_ciudadanoMT1")
         id_ciudadanoMT2 = data.get("id_ciudadanoMT2")
-        
 
-        print("datas", acta_matrimonio, numero_folio, numero_tomo,
-              fecha_registro_mat, lugar_registro_mat,
-              id_empleado,
-              fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-              id_ciudadanoC1, id_ciudadanoC2,
-              id_ciudadanoMC1, id_ciudadanoPC1,
-              id_ciudadanoMC2, id_ciudadanoPC2,
-              id_ciudadanoMT1, id_ciudadanoMT2)
-
+        print(
+            "datas",
+            acta_matrimonio,
+            numero_folio,
+            numero_tomo,
+            fecha_registro_mat,
+            lugar_registro_mat,
+            id_empleado,
+            fecha_matrimonio,
+            lugar_matrimonio,
+            hora_matrimonio,
+            id_ciudadanoC1,
+            id_ciudadanoC2,
+            id_ciudadanoMC1,
+            id_ciudadanoPC1,
+            id_ciudadanoMC2,
+            id_ciudadanoPC2,
+            id_ciudadanoMT1,
+            id_ciudadanoMT2,
+        )
 
         try:
             matrimonio_model.crear_matrimonio_db(
-                acta_matrimonio, numero_folio, numero_tomo,
-                fecha_registro_mat, lugar_registro_mat,
+                acta_matrimonio,
+                numero_folio,
+                numero_tomo,
+                fecha_registro_mat,
+                lugar_registro_mat,
                 id_empleado,
-                fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-                id_ciudadanoC1, id_ciudadanoC2,
-                id_ciudadanoMC1, id_ciudadanoPC1,
-                id_ciudadanoMC2, id_ciudadanoPC2,
-                id_ciudadanoMT1, id_ciudadanoMT2
+                fecha_matrimonio,
+                lugar_matrimonio,
+                hora_matrimonio,
+                id_ciudadanoC1,
+                id_ciudadanoC2,
+                id_ciudadanoMC1,
+                id_ciudadanoPC1,
+                id_ciudadanoMC2,
+                id_ciudadanoPC2,
+                id_ciudadanoMT1,
+                id_ciudadanoMT2,
             )
             return jsonify({"message": "Acta de matrimonio creada."}), 201
 
@@ -175,14 +193,23 @@ def setup_routes(matrimonio_bp):
 
         try:
             matrimonio_model.actualizar_matrimonio_db(
-                acta_matrimonio, numero_folio, numero_tomo,
-                fecha_registro_mat, lugar_registro_mat,
+                acta_matrimonio,
+                numero_folio,
+                numero_tomo,
+                fecha_registro_mat,
+                lugar_registro_mat,
                 id_empleado,
-                fecha_matrimonio, lugar_matrimonio, hora_matrimonio,
-                id_ciudadanoC1, id_ciudadanoC2,
-                id_ciudadanoMC1, id_ciudadanoPC1,
-                id_ciudadanoMC2, id_ciudadanoPC2,
-                id_ciudadanoMT1, id_ciudadanoMT2
+                fecha_matrimonio,
+                lugar_matrimonio,
+                hora_matrimonio,
+                id_ciudadanoC1,
+                id_ciudadanoC2,
+                id_ciudadanoMC1,
+                id_ciudadanoPC1,
+                id_ciudadanoMC2,
+                id_ciudadanoPC2,
+                id_ciudadanoMT1,
+                id_ciudadanoMT2,
             )
 
             return jsonify({"Message": f"Acta {acta_matrimonio} actualizada."})
@@ -201,3 +228,17 @@ def setup_routes(matrimonio_bp):
                 jsonify({"error": "Error al actualizar.", "detalle_tecnico": str(e)}),
                 500,
             )
+
+    @matrimonio_bp.route("/actas", methods=["GET"])
+    def listar_matrimonios_con_ciudadanos():
+        try:
+            matrimonios = matrimonio_model.obtener_matrimonios_con_ciudadanos()
+            
+            if not matrimonios:
+                return jsonify({"message": "No hay actas de matrimonio registradas."}), 200
+                
+            return jsonify(matrimonios), 200
+
+        except Exception as e:
+            print(f"Error al listar matrimonios con ciudadanos: {e}")
+            return jsonify({"error": "Error interno al obtener las actas."}), 500
