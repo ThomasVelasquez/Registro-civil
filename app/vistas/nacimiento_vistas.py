@@ -216,7 +216,6 @@ def setup_routes(nacimiento_bp):
 
     @nacimiento_bp.route("/actas/ciudadanos", methods=["GET"])
     def listar_nacimientos_con_actas():
-        # Llama a la nueva función que trae los datos unidos
         nacimientos = nacimiento_model.obtener_nacimientos_con_ciudadanos()
         return jsonify(nacimientos), 200
 

@@ -1,6 +1,5 @@
 from app.models.database import execute_query, fetch_all, fetch_one, execute_many_query # <-- Se asume 'execute_many_query'
 
-# Lista de todos los campos que tiene la tabla Ciudadano
 TODOS_LOS_CAMPOS = [
     'cedula', 
     'primer_nombre', 
@@ -59,12 +58,7 @@ def crear_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido,
 
 
 def insertar_multiples_ciudadanos_db(lista_de_datos):
-    """
-    Inserta múltiples filas de ciudadanos en la base de datos usando execute_many.
     
-    :param lista_de_datos: Una lista de tuplas con los datos del ciudadano
-                           en el orden definido por TODOS_LOS_CAMPOS.
-    """
     query = """
         INSERT INTO ciudadano (
             cedula, primer_nombre, segundo_nombre, primer_apellido, 
@@ -119,10 +113,7 @@ def actualizar_ciudadano_db(id_ciudadano, cedula, primer_nombre, segundo_nombre,
 
 
 def actualizar_ciudadano_parcial_db(id_ciudadano_o_cedula, datos_a_actualizar):
-    """
-    Actualiza el ciudadano con los campos proporcionados.
-    La búsqueda se realiza por id_ciudadano o por cedula.
-    """
+   
     
     CAMPOS_CIUDADANO_EDITABLES = [
         'cedula', 
@@ -132,8 +123,7 @@ def actualizar_ciudadano_parcial_db(id_ciudadano_o_cedula, datos_a_actualizar):
         'segundo_apellido', 
         'genero', 
         'domicilio',
-        # Puedes añadir más si son editables:
-        # 'nacionalidad', 'estado_civil', 'profesion', 'fecha_nacimiento'
+        
     ]
 
     campos_validos = {
@@ -142,7 +132,7 @@ def actualizar_ciudadano_parcial_db(id_ciudadano_o_cedula, datos_a_actualizar):
     }
 
     if not campos_validos:
-        print("Advertencia: No se recibieron campos válidos para actualizar al ciudadano.")
+        print("Error: No se recibieron campos válidos para actualizar al ciudadano.")
         return 0
 
    
@@ -158,7 +148,5 @@ def actualizar_ciudadano_parcial_db(id_ciudadano_o_cedula, datos_a_actualizar):
     
     params = list(campos_validos.values()) + [id_ciudadano_o_cedula, id_ciudadano_o_cedula]
     
-    """ print(f"Query PATCH Ciudadano: {query}")
-    print(f"Params PATCH Ciudadano: {params}") """
     
     execute_query(query, params)

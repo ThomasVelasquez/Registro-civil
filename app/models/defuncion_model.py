@@ -134,85 +134,37 @@ def obtener_todas_defunciones():
 
 
 def obtener_defuncion_por_acta(acta_defuncion):
-    campos = "acta_defuncion, " + ", ".join(TODOS_LOS_CAMPOS)
+    """Obtiene un acta de defunción por su ID (acta_defuncion)."""
+    campos_sin_pk = [c for c in TODOS_LOS_CAMPOS if c != 'acta_defuncion'] 
+    campos = "acta_defuncion, " + ", ".join(campos_sin_pk)
     query = f"SELECT {campos} FROM defuncion WHERE acta_defuncion = ?"
     return fetch_one(query, (acta_defuncion,))
 
 
-def actualizar_defuncion_db(
-    acta_defuncion,
-    numero_folio,
-    numero_tomo,
-    fecha_registro_def,
-    lugar_registro_def,
-    id_empleado,
-    id_ciudadano,
-    fecha_fallecimiento,
-    lugar_fallecimiento,
-    hora_fallecimiento,
-    causa,
-    forma,
-    nro_certificado_def,
-    fecha_expedicion_def,
-    autoridad_expide_def,
-    numero_mpps_autoridad_def,
-    denominacion_dependencia_salud,
-    id_ciudadano_declarante,
-    relacion_con_fallecido,
-    id_ciudadanoC,
-    id_ciudadano_FM,
-    id_ciudadano_FP,
-):
+def actualizar_defuncion_parcial_db(data_to_update):
+    """
+    Actualiza campos específicos en la tabla defuncion (PATCH).
+    Recibe un diccionario con los campos a modificar y 'acta_defuncion'.
+    """
+    
+    acta_defuncion = data_to_update.pop('acta_defuncion', None)
+    
+    if not acta_defuncion or not data_to_update:
+        raise ValueError("Se requiere 'acta_defuncion' y al menos un campo para actualizar.")
 
-    query = """
+    fields = data_to_update.keys()
+    set_clauses = [f"{field} = ?" for field in fields]
+    set_sql = ", ".join(set_clauses)
+    
+    query = f"""
         UPDATE defuncion SET
-            numero_folio = ?,
-            numero_tomo = ?,
-            fecha_registro_def = ?,
-            lugar_registro_def = ?,
-            id_empleado = ?,
-            id_ciudadano = ?,
-            fecha_fallecimiento = ?,
-            lugar_fallecimiento = ?,
-            hora_fallecimiento = ?,
-            causa = ?,
-            forma = ?,
-            nro_certificado_def = ?,
-            fecha_expedicion_def = ?,
-            autoridad_expide_def = ?,
-            numero_mpps_autoridad_def = ?,
-            denominacion_dependencia_salud = ?,
-            id_ciudadano_declarante = ?,
-            relacion_con_fallecido = ?,
-            id_ciudadanoC = ?,
-            id_ciudadano_FM = ?,
-            id_ciudadano_FP = ?
+            {set_sql}
         WHERE acta_defuncion = ?
     """
-    params = (
-        numero_folio,
-        numero_tomo,
-        fecha_registro_def,
-        lugar_registro_def,
-        id_empleado,
-        id_ciudadano,
-        fecha_fallecimiento,
-        lugar_fallecimiento,
-        hora_fallecimiento,
-        causa,
-        forma,
-        nro_certificado_def,
-        fecha_expedicion_def,
-        autoridad_expide_def,
-        numero_mpps_autoridad_def,
-        denominacion_dependencia_salud,
-        id_ciudadano_declarante,
-        relacion_con_fallecido,
-        id_ciudadanoC,
-        id_ciudadano_FM,
-        id_ciudadano_FP,
-        acta_defuncion,
-    )
+    
+    params = list(data_to_update.values())
+    params.append(acta_defuncion)
+
     execute_query(query, params)
 
 

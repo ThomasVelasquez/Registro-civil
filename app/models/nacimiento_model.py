@@ -264,5 +264,4 @@ def actualizar_nacimiento_parcial_db(acta_nacimiento, datos_a_actualizar):
     """ print(f"Query PATCH: {query}")
     print(f"Params PATCH: {params}") """
     
-    # Ejecutamos la consulta. execute_query debería manejar el commit.
     execute_query(query, params)

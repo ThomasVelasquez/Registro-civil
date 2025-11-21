@@ -86,3 +86,17 @@ def obtener_empleados_con_ciudadanos():
             e.numero_empleado;
     """
     return fetch_all(query)
+
+def obtener_id_por_numero(numero_empleado):
+    
+    query = """
+        SELECT 
+            id_empleado
+        FROM 
+            empleado
+        WHERE 
+            numero_empleado = ?;
+    """
+    resultado = fetch_one(query, (numero_empleado,)) 
+    
+    return resultado['id_empleado'] if resultado else None

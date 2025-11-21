@@ -121,10 +121,67 @@ def setup_routes(defuncion_bp):
         defunciones = defuncion_model.obtener_todas_defunciones()
         return jsonify(defunciones), 200
 
+    @defuncion_bp.route("/<int:acta_id>", methods=["GET"])
+    def obtener_defuncion_por_id(acta_id):
+        try:
+            defuncion = defuncion_model.obtener_defuncion_por_acta(acta_id)
+
+            if defuncion:
+                return jsonify(defuncion), 200
+            else:
+                return (
+                    jsonify(
+                        {"error": f"Acta de defunción con ID {acta_id} no encontrada."}
+                    ),
+                    404,
+                )
+
+        except Exception as e:
+            print(f"Error al buscar defunción por ID: {e}")
+            return jsonify({"error": "Ocurrió un error interno."}), 500
+
+    @defuncion_bp.route("/<int:acta_id>", methods=["PATCH"])
+    def actualizar_defuncion_parcial(acta_id):
+        """Ruta para modificar solo ciertos campos de un acta."""
+        data = request.get_json()
+
+        if not data:
+            return (
+                jsonify(
+                    {"error": "No se recibieron datos JSON para la actualización."}
+                ),
+                400,
+            )
+
+        data["acta_defuncion"] = acta_id
+
+        try:
+            defuncion_model.actualizar_defuncion_parcial_db(data)
+
+            return (
+                jsonify(
+                    {
+                        "message": f"Acta de defunción {acta_id} actualizada exitosamente."
+                    }
+                ),
+                200,
+            )
+
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+
+        except Exception as e:
+            print(f"Error en PATCH de defunción: {e}")
+            return (
+                jsonify(
+                    {"error": "Ocurrió un error interno durante la actualización."}
+                ),
+                500,
+            )
+
     @defuncion_bp.route("/detalles", methods=["GET"])
     def listar_defunciones_detalladas():
         try:
-            # Llama a la nueva función del modelo que trae los JOINs
             defunciones_detalles = defuncion_model.obtener_defunciones_completas()
 
             if not defunciones_detalles:
