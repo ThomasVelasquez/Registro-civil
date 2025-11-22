@@ -1,0 +1,1 @@
+from app.vistas.reporte_vistas import reporte_bp as reportes_bp
