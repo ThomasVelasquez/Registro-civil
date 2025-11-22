@@ -4,24 +4,24 @@ from sqlite3 import IntegrityError
 
 REQUIRED_FIELDS = [
     # 'acta_nacimiento',
-    'numero_folio',
-    'numero_tomo', 
-    'fecha_registro_nac', 
-    'lugar_registro_nac',
-    'id_empleado',
-    'id_ciudadano',
-    'lugar_nacimiento', 
-    'hora_nacimiento',
-    'nro_certificado_medico',
-    'fecha_expedicion_cert',
-    'autoridad_expide_cert',
-    'numero_mpps_autoridad',
-    'nombre_centro_salud',
-    'id_ciudadanoM',
+    "numero_folio",
+    "numero_tomo",
+    "fecha_registro_nac",
+    "lugar_registro_nac",
+    "id_empleado",
+    "id_ciudadano",
+    "lugar_nacimiento",
+    "hora_nacimiento",
+    "nro_certificado_medico",
+    "fecha_expedicion_cert",
+    "autoridad_expide_cert",
+    "numero_mpps_autoridad",
+    "nombre_centro_salud",
+    "id_ciudadanoM",
     # 'id_ciudadanoP',
-    'id_ciudadanoT1',
-    'id_ciudadanoT2',
-    'documentos_presentandos'
+    "id_ciudadanoT1",
+    "id_ciudadanoT2",
+    "documentos_presentandos",
 ]
 
 
@@ -32,7 +32,7 @@ def setup_routes(nacimiento_bp):
         data = request.get_json()
 
         if not data:
-            return jsonify({"error": "No se recibieron datos JSON."}), 400 
+            return jsonify({"error": "No se recibieron datos JSON."}), 400
 
         missing_fields = [
             field
@@ -76,8 +76,6 @@ def setup_routes(nacimiento_bp):
                 numero_tomo,
                 fecha_registro_nac,
                 lugar_registro_nac,
-                id_empleado,
-                id_ciudadano,
                 lugar_nacimiento,
                 hora_nacimiento,
                 nro_certificado_medico,
@@ -85,11 +83,13 @@ def setup_routes(nacimiento_bp):
                 autoridad_expide_cert,
                 numero_mpps_autoridad,
                 nombre_centro_salud,
+                id_ciudadano,
+                id_empleado,
                 id_ciudadanoM,
                 id_ciudadanoP,
                 id_ciudadanoT1,
                 id_ciudadanoT2,
-                documentos_presentandos
+                documentos_presentandos,
             )
             return jsonify({"message": "Acta de nacimiento creada."}), 201
 
@@ -121,13 +121,22 @@ def setup_routes(nacimiento_bp):
     @nacimiento_bp.route("/<int:acta_nacimiento>", methods=["PUT"])
     def actualizar_acta(acta_nacimiento):
         data = request.get_json()
-        
-        campos_requeridos = ["numero_folio", "numero_tomo", "fecha_registro_nac", "lugar_registro_nac",
-                             "id_empleado", "id_ciudadano",
-                             "lugar_nacimiento", "hora_nacimiento", "nro_certificado_medico", 
-                             "id_ciudadanoM", #"id_ciudadanoP",
-                             "id_ciudadanoT1", "id_ciudadanoT2",
-                             "documentos_presentandos"]
+
+        campos_requeridos = [
+            "numero_folio",
+            "numero_tomo",
+            "fecha_registro_nac",
+            "lugar_registro_nac",
+            "id_empleado",
+            "id_ciudadano",
+            "lugar_nacimiento",
+            "hora_nacimiento",
+            "nro_certificado_medico",
+            "id_ciudadanoM",
+            "id_ciudadanoT1",
+            "id_ciudadanoT2",
+            "documentos_presentandos",
+        ]
 
         for campo in campos_requeridos:
             if data.get(campo) is None:
@@ -164,17 +173,31 @@ def setup_routes(nacimiento_bp):
         id_ciudadanoT1 = data.get("id_ciudadanoT1")
         id_ciudadanoT2 = data.get("id_ciudadanoT2")
         documentos_presentandos = data.get("documentos_presentandos")
-        
+
         try:
-            nacimiento_model.actualizar_nacimiento_db(acta_nacimiento,
-            numero_folio, numero_tomo, fecha_registro_nac, lugar_registro_nac,
-            id_empleado, id_ciudadano, lugar_nacimiento, hora_nacimiento,
-            nro_certificado_medico, fecha_expedicion_cert,
-            autoridad_expide_cert, numero_mpps_autoridad, nombre_centro_salud,
-            id_ciudadanoM, id_ciudadanoP, id_ciudadanoT1, id_ciudadanoT2,
-            documentos_presentandos)
-            
-            return jsonify({"Message":f"Acta {acta_nacimiento} actualizada."})
+            nacimiento_model.actualizar_nacimiento_db(
+                acta_nacimiento,
+                numero_folio,
+                numero_tomo,
+                fecha_registro_nac,
+                lugar_registro_nac,
+                id_empleado,
+                id_ciudadano,
+                lugar_nacimiento,
+                hora_nacimiento,
+                nro_certificado_medico,
+                fecha_expedicion_cert,
+                autoridad_expide_cert,
+                numero_mpps_autoridad,
+                nombre_centro_salud,
+                id_ciudadanoM,
+                id_ciudadanoP,
+                id_ciudadanoT1,
+                id_ciudadanoT2,
+                documentos_presentandos,
+            )
+
+            return jsonify({"Message": f"Acta {acta_nacimiento} actualizada."})
         except IntegrityError as e:
             return (
                 jsonify(
@@ -186,6 +209,88 @@ def setup_routes(nacimiento_bp):
                 400,
             )
         except Exception as e:
+            return (
+                jsonify({"error": "Error al actualizar.", "detalle_tecnico": str(e)}),
+                500,
+            )
+
+    @nacimiento_bp.route("/actas/ciudadanos", methods=["GET"])
+    def listar_nacimientos_con_actas():
+        nacimientos = nacimiento_model.obtener_nacimientos_con_ciudadanos()
+        return jsonify(nacimientos), 200
+
+    @nacimiento_bp.route("/<int:acta_id>/detallada", methods=["GET"])
+    def obtener_nacimiento_por_acta(acta_id):
+        """
+        Obtiene el registro completo del acta de nacimiento y los datos del
+        ciudadano (recién nacido) asociados, usando el ID del acta.
+        """
+        if not acta_id:
+            return (
+                jsonify({"error": "Debe proporcionar un ID de Acta de Nacimiento."}),
+                400,
+            )
+
+        try:
+            data = nacimiento_model.obtener_nacimiento_con_ciudadano_por_acta(acta_id)
+
+            if data:
+                return jsonify(data), 200
+            else:
+                return (
+                    jsonify(
+                        {"error": f"Acta de Nacimiento N° {acta_id} no encontrada."}
+                    ),
+                    404,
+                )
+
+        except Exception as e:
+            print(f"Error al buscar acta: {e}")
+            return jsonify({"error": "Ocurrió un error interno en el servidor."}), 500
+
+
+    @nacimiento_bp.route("/<int:acta_nacimiento>", methods=["PATCH"])
+    def actualizar_acta_parcial(acta_nacimiento):
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"Error": "No se recibieron datos JSON para actualizar."}), 400
+
+        datos_a_actualizar = data
+
+        if not datos_a_actualizar:
+            return (
+                jsonify(
+                    {
+                        "Error": "El cuerpo de la solicitud no contiene campos para actualizar."
+                    }
+                ),
+                400,
+            )
+
+        try:
+            nacimiento_model.actualizar_nacimiento_parcial_db(
+                acta_nacimiento, datos_a_actualizar
+            )
+
+
+            return (
+                jsonify({"Message": f"Acta {acta_nacimiento} actualizada parcialmente."}),
+                200,
+            )
+
+        except IntegrityError as e:
+            return (
+                jsonify(
+                    {
+                        "error": "Error de integridad al actualizar. Revise los valores de campos UNIQUE o NOT NULL.",
+                        "detalle": f"Detalle DB: {e}",
+                    }
+                ),
+                400,
+            )
+        except Exception as e:
+            print(f"Error en PATCH /nacimiento: {e}")
             return (
                 jsonify({"error": "Error al actualizar.", "detalle_tecnico": str(e)}),
                 500,

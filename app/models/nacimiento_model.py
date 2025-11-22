@@ -64,27 +64,45 @@ def crear_nacimiento_db(
     
     query = """
         INSERT INTO nacimiento(
-            numero_folio, numero_tomo, fecha_registro_nac,
-            lugar_registro_nac, id_empleado, id_ciudadano,
-            lugar_nacimiento, hora_nacimiento,
-            nro_certificado_medico, fecha_expedicion_cert,
-            autoridad_expide_cert, numero_mpps_autoridad,
+            numero_folio,
+            numero_tomo,
+            fecha_registro_nac,
+            lugar_registro_nac,
+            id_empleado, 
+            id_ciudadano,
+            lugar_nacimiento,
+            hora_nacimiento,
+            nro_certificado_medico,
+            fecha_expedicion_cert,
+            autoridad_expide_cert,
+            numero_mpps_autoridad,
             nombre_centro_salud,
-            id_ciudadanoM, id_ciudadanoP,
-            id_ciudadanoT1, id_ciudadanoT2,
+            id_ciudadanoM,
+            id_ciudadanoP,
+            id_ciudadanoT1,
+            id_ciudadanoT2,
             documentos_presentandos
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     
     params = (
-        numero_folio, numero_tomo, fecha_registro_nac,
-        lugar_registro_nac, id_empleado, id_ciudadano,
-        lugar_nacimiento, hora_nacimiento,
-        nro_certificado_medico, fecha_expedicion_cert,
-        autoridad_expide_cert, numero_mpps_autoridad,
+        numero_folio,
+        numero_tomo,
+        fecha_registro_nac,
+        lugar_registro_nac,
+        id_empleado,
+        id_ciudadano,
+        lugar_nacimiento,
+        hora_nacimiento,
+        nro_certificado_medico,
+        fecha_expedicion_cert,
+        autoridad_expide_cert,
+        numero_mpps_autoridad,
         nombre_centro_salud,
-        id_ciudadanoM, id_ciudadanoP,
-        id_ciudadanoT1, id_ciudadanoT2,
+        id_ciudadanoM,
+        id_ciudadanoP,
+        id_ciudadanoT1,
+        id_ciudadanoT2,
         documentos_presentandos
     )
     
@@ -154,3 +172,96 @@ def actualizar_nacimiento_db(
 """ def eliminar_nacimiento_db(acta_nacimiento):
     query = "DELETE FROM nacimiento WHERE acta_nacimiento = ?"
     execute_query(query, (acta_nacimiento)) """
+    
+def obtener_nacimientos_con_ciudadanos():
+
+    query = """
+        SELECT 
+            n.*,
+            c.cedula,
+            c.primer_nombre,
+            c.segundo_nombre,
+            c.primer_apellido,
+            c.segundo_apellido,
+            c.fecha_nacimiento,
+            c.genero,
+            c.estado_civil,
+            c.profesion,
+            c.domicilio
+        FROM 
+            nacimiento n
+        JOIN 
+            ciudadano c ON n.id_ciudadano = c.id_ciudadano;
+    """
+    return fetch_all(query)
+
+def obtener_nacimiento_con_ciudadano_por_acta(acta_nacimiento_id):
+    """
+    Busca un registro de nacimiento por su ID (acta_nacimiento) 
+    y hace un JOIN para obtener los datos del ciudadano recién nacido.
+    """
+    query = """
+        SELECT 
+            n.acta_nacimiento, n.numero_folio, n.numero_tomo, 
+            n.fecha_registro_nac, n.lugar_registro_nac, n.id_empleado,
+            n.lugar_nacimiento, n.hora_nacimiento, n.nro_certificado_medico,
+            n.fecha_expedicion_cert, n.autoridad_expide_cert, n.numero_mpps_autoridad,
+            n.nombre_centro_salud, n.id_ciudadanoM, n.id_ciudadanoP, 
+            n.id_ciudadanoT1, n.id_ciudadanoT2, n.documentos_presentandos,
+            
+            -- Datos del Ciudadano (el recién nacido)
+            c.id_ciudadano, c.cedula, c.primer_nombre, c.segundo_nombre,
+            c.primer_apellido, c.segundo_apellido, c.fecha_nacimiento,
+            c.genero, c.estado_civil, c.profesion, c.domicilio, c.nacionalidad
+            
+        FROM 
+            nacimiento n
+        JOIN 
+            ciudadano c ON n.id_ciudadano = c.id_ciudadano
+        WHERE 
+            n.acta_nacimiento = ?
+    """
+    params = (acta_nacimiento_id,)
+    
+    resultado = fetch_one(query, params)
+    
+    if resultado:
+        return resultado
+    return None
+
+def actualizar_nacimiento_parcial_db(acta_nacimiento, datos_a_actualizar):
+    """
+    Actualiza el acta de nacimiento con los campos proporcionados en datos_a_actualizar.
+    Utiliza una consulta UPDATE dinámica.
+    """
+    
+    CAMPOS_ACTA_EDITABLES = [
+        'lugar_nacimiento', 'hora_nacimiento',
+        'nro_certificado_medico', 'fecha_expedicion_cert', 
+        'lugar_registro_nac',
+    ]
+
+    campos_validos = {
+        k: v for k, v in datos_a_actualizar.items() 
+        if k in CAMPOS_ACTA_EDITABLES and v is not None
+    }
+
+    if not campos_validos:
+        print("Advertencia: No se recibieron campos válidos para actualizar el acta.")
+        return 0 
+
+    set_clauses = [f"{campo} = ?" for campo in campos_validos.keys()]
+    set_query = ", ".join(set_clauses)
+    
+    query = f"""
+        UPDATE nacimiento SET
+            {set_query}
+        WHERE acta_nacimiento = ?
+    """
+    
+    params = list(campos_validos.values()) + [acta_nacimiento]
+    
+    """ print(f"Query PATCH: {query}")
+    print(f"Params PATCH: {params}") """
+    
+    execute_query(query, params)

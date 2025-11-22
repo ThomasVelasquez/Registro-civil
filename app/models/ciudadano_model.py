@@ -1,8 +1,7 @@
 from app.models.database import execute_query, fetch_all, fetch_one, execute_many_query # <-- Se asume 'execute_many_query'
 
-# Lista de todos los campos que tiene la tabla Ciudadano
 TODOS_LOS_CAMPOS = [
-    # 'cedula', 
+    'cedula', 
     'primer_nombre', 
     'segundo_nombre', 
     'primer_apellido', 
@@ -59,12 +58,7 @@ def crear_ciudadano_db(cedula, primer_nombre, segundo_nombre, primer_apellido,
 
 
 def insertar_multiples_ciudadanos_db(lista_de_datos):
-    """
-    Inserta múltiples filas de ciudadanos en la base de datos usando execute_many.
     
-    :param lista_de_datos: Una lista de tuplas con los datos del ciudadano
-                           en el orden definido por TODOS_LOS_CAMPOS.
-    """
     query = """
         INSERT INTO ciudadano (
             cedula, primer_nombre, segundo_nombre, primer_apellido, 
@@ -81,10 +75,10 @@ def obtener_todos_ciudadanos():
     return fetch_all(query)
 
 
-def obtener_ciudadano_por_id(id_ciudadano):
+def obtener_ciudadano_por_cedula(cedula):
     campos = "id_ciudadano, " + ", ".join(TODOS_LOS_CAMPOS)
-    query = f"SELECT {campos} FROM ciudadano WHERE id_ciudadano = ?"
-    return fetch_one(query, (id_ciudadano,))
+    query = f"SELECT {campos} FROM ciudadano WHERE cedula = ?"
+    return fetch_one(query, (cedula,))
 
 
 def actualizar_ciudadano_db(id_ciudadano, cedula, primer_nombre, segundo_nombre, primer_apellido, 
@@ -116,3 +110,43 @@ def actualizar_ciudadano_db(id_ciudadano, cedula, primer_nombre, segundo_nombre,
 """ def eliminar_ciudadano_db(id_ciudadano):
     query = "DELETE FROM ciudadano WHERE id_ciudadano = ?"
     execute_query(query, (id_ciudadano,)) """
+
+
+def actualizar_ciudadano_parcial_db(id_ciudadano_o_cedula, datos_a_actualizar):
+   
+    
+    CAMPOS_CIUDADANO_EDITABLES = [
+        'cedula', 
+        'primer_nombre', 
+        'segundo_nombre', 
+        'primer_apellido', 
+        'segundo_apellido', 
+        'genero', 
+        'domicilio',
+        
+    ]
+
+    campos_validos = {
+        k: v for k, v in datos_a_actualizar.items() 
+        if k in CAMPOS_CIUDADANO_EDITABLES and v is not None
+    }
+
+    if not campos_validos:
+        print("Error: No se recibieron campos válidos para actualizar al ciudadano.")
+        return 0
+
+   
+    set_clauses = [f"{campo} = ?" for campo in campos_validos.keys()]
+    set_query = ", ".join(set_clauses)
+    
+    
+    query = f"""
+        UPDATE ciudadano SET
+            {set_query}
+        WHERE id_ciudadano = ? OR cedula = ? 
+    """
+    
+    params = list(campos_validos.values()) + [id_ciudadano_o_cedula, id_ciudadano_o_cedula]
+    
+    
+    execute_query(query, params)

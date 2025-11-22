@@ -19,27 +19,21 @@ def create_app():
     )
 
     from app.models import ciudadano_model
-
     ciudadano_model.setup_db()
 
     from app.models import empleado_model
-
     empleado_model.setup_db()
 
     from app.models import nacimiento_model
-
     nacimiento_model.setup_db()
 
     from app.models import defuncion_model
-
     defuncion_model.setup_db()
 
     from app.models import matrimonio_model
-
     matrimonio_model.setup_db()
 
     from app.models import divorcio_model
-    
     divorcio_model.setup_db()
     
     
@@ -49,6 +43,7 @@ def create_app():
     from app.controllers.defuncion_controllers import defuncion_bp
     from app.controllers.matrimonio_controllers import matrimonio_bp
     from app.controllers.divorcio_controllers import divorcio_bp
+    from app.controllers.reportes_controllers import reportes_bp 
 
     app.register_blueprint(ciudadano_bp, url_prefix="/api/v1/ciudadanos")
     app.register_blueprint(empleado_bp, url_prefix="/api/v1/empleados")
@@ -56,5 +51,6 @@ def create_app():
     app.register_blueprint(defuncion_bp, url_prefix="/api/v1/defunciones")
     app.register_blueprint(matrimonio_bp, url_prefix="/api/v1/matrimonios")
     app.register_blueprint(divorcio_bp, url_prefix="/api/v1/divorcios")
+    app.register_blueprint(reportes_bp, url_prefix="/api/v1/reportes") 
 
     return app

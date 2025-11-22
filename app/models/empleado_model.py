@@ -67,3 +67,36 @@ def obtener_todos_empleados():
     campos = "id_empleado, " + ", ".join(TODOS_LOS_CAMPOS)
     query = f"SELECT {campos} FROM empleado"
     return fetch_all(query)
+
+def obtener_empleados_con_ciudadanos():
+
+    query = """
+        SELECT 
+            e.*,                 -- Todos los campos de la tabla empleado
+            c.cedula,            -- Cedula del ciudadano/empleado
+            c.primer_nombre,     -- Primer nombre del ciudadano/empleado
+            c.segundo_nombre,    -- Segundo nombre
+            c.primer_apellido,   -- Primer apellido
+            c.segundo_apellido   -- Segundo apellido
+        FROM 
+            empleado e
+        JOIN 
+            ciudadano c ON e.id_ciudadano = c.id_ciudadano
+        ORDER BY
+            e.numero_empleado;
+    """
+    return fetch_all(query)
+
+def obtener_id_por_numero(numero_empleado):
+    
+    query = """
+        SELECT 
+            id_empleado
+        FROM 
+            empleado
+        WHERE 
+            numero_empleado = ?;
+    """
+    resultado = fetch_one(query, (numero_empleado,)) 
+    
+    return resultado['id_empleado'] if resultado else None
